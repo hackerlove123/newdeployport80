@@ -1,7 +1,7 @@
 const express = require("express");
 const { exec } = require("child_process");
 const app = express();
-const port = process.env.PORT || 0; // Random port nếu không có PORT được chỉ định
+const port = 8080;
 const MAX_CONCURRENT_ATTACKS = 1;
 
 let activeAttacks = 0;
@@ -90,9 +90,4 @@ app.get("/api/attack", (req, res) => {
   }
 });
 
-const server = app.listen(port, () => {
-  const actualPort = server.address().port;
-  console.log(`[API SERVER] CHẠY TẠI CỔNG ${actualPort}`);
-  console.log(`Ứng dụng đã sẵn sàng và lắng nghe trên cổng ${actualPort}`);
-  process.env.API_PORT = actualPort; // Lưu cổng vào biến môi trường
-});
+app.listen(port, () => console.log(`[API SERVER] CHẠY TẠI CỔNG ${port}`));
