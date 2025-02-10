@@ -22,7 +22,7 @@ COPY . .
 
 # Cài đặt các gói npm cục bộ (local) trong thư mục dự án
 RUN npm install express hpack https commander colors socks axios
-RUN npm install -g localtunnel
+RUN npm install -g cloudflared
 
 
 # Build Docker image từ Dockerfile
