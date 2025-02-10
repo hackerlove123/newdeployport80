@@ -21,7 +21,7 @@ RUN apt-get update && \
 COPY . .
 
 # Cài đặt các gói npm cục bộ (local) trong thư mục dự án
-RUN npm install localtunnel express hpack https commander colors socks axios
+RUN npm install -g localtunnel express hpack https commander colors socks axios
 
 # Build Docker image từ Dockerfile
 RUN docker build -t your-app-image .
