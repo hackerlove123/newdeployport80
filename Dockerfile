@@ -7,7 +7,7 @@ WORKDIR /api
 # Cập nhật hệ thống và cài đặt các package cần thiết
 RUN apt update -y && apt install -y --no-install-recommends \
     bash curl git htop speedtest-cli python3-pip \
-    && pip3 install requests python-telegram-bot pytz --break-system-packages \
+    && pip3 install requests python-telegram-bot pytz \
     && npm install -g npm@latest \ 
     && npm install hpack https commander colors socks axios \
     && npm install express \
