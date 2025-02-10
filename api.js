@@ -62,7 +62,7 @@ app.get("/api/attack", (req, res) => {
       host: host,
       port: port,
       time: time,
-      modul: "GET POST HEAD",
+      modul: "GET POST HEAD", // Hiển thị đầy đủ khi chọn FULL
       method: method,
       pid: currentPID,
     });
@@ -75,7 +75,7 @@ app.get("/api/attack", (req, res) => {
       host: host,
       port: port,
       time: time,
-      modul: modul,
+      modul: modul, // Chỉ hiển thị giá trị của modul (GET, POST, hoặc HEAD)
       method: method,
       pid: currentPID,
     });
