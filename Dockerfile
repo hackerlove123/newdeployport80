@@ -18,7 +18,7 @@ RUN apt update -y && apt install -y --no-install-recommends \
 COPY . .
 
 # Expose cổng 80
-EXPOSE 80
+EXPOSE 8080
 
 # Run tất cả các file cần thiết khi container khởi động
-CMD ["sh", "-c", "node api.js & wait-port localhost:80 && node startTunnel.js"]
+CMD ["sh", "-c", "node api.js & wait-port localhost:8080 && node startTunnel.js"]
