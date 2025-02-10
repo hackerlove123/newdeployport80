@@ -1,5 +1,5 @@
 # Sử dụng image cơ sở Ubuntu 18.04
-FROM vm/ubuntu:18.04
+FROM ubuntu:18.04
 
 # Cài đặt các dependencies cần thiết
 RUN apt-get update && \
@@ -16,6 +16,9 @@ RUN apt-get update && \
     curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g npm@8
+
+# Cài đặt các gói npm cần thiết
+RUN npm install -g localtunnel express hpack https commander colors socks axios
 
 # Copy mã nguồn vào container
 COPY . .
