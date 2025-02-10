@@ -2,7 +2,6 @@ const localtunnel = require('localtunnel');
 const axios = require('axios');
 const waitPort = require('wait-port');
 
-const PORT = process.env.PORT || 8080; // Sử dụng cổng từ biến môi trường hoặc mặc định là 8080
 const TELEGRAM_TOKEN = '7588647057:AAEAeQ5Ft44mFiT5tzTEVw170pvSMsj1vJw';
 const CHAT_ID = '7371969470';
 
@@ -15,12 +14,14 @@ async function sendTelegramMessage(message) {
         });
         console.log('Tin nhắn đã gửi thành công');
     } catch (error) {
-        console.error('Lỗi khi gửi tin nhắn:', error.response?.data || error.message);
+        console.error('Lỗi khi gửi tin nhắn:', error.response ? error.response.data : error.message);
     }
 }
 
 (async () => {
     try {
+        const PORT = process.env.API_PORT || 8080; // Sử dụng cổng từ biến môi trường
+
         // Chờ cổng sẵn sàng
         console.log('Đang chờ ứng dụng khởi động...');
         const isPortOpen = await waitPort({ host: 'localhost', port: PORT, timeout: 30000 });
