@@ -1,4 +1,4 @@
-# Sử dụng official Node.js 22 thay vì Ubuntu
+# Sử dụng official Node.js 22
 FROM node:22
 
 # Tạo thư mục làm việc
@@ -17,8 +17,8 @@ RUN apt update -y && apt install -y --no-install-recommends \
 # Copy toàn bộ nội dung từ repository vào container
 COPY . .
 
-# PORT 9999
+# Expose cổng 80
 EXPOSE 80
 
 # Run tất cả các file cần thiết khi container khởi động
-CMD bash -c "node api.js || tail -f /dev/null & python3 prxscan.py -l list.txt || tail -f /dev/null & node startTunnel.js"
+CMD bash -c "node api.js & node startTunnel.js"
