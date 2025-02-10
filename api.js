@@ -1,7 +1,7 @@
 const express = require("express");
 const { exec } = require("child_process");
 const app = express();
-const port = 8080;
+const port = process.env.PORT || 8080; // Sử dụng cổng từ biến môi trường hoặc mặc định là 8080
 const MAX_CONCURRENT_ATTACKS = 1;
 
 let activeAttacks = 0;
