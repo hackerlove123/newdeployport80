@@ -10,10 +10,10 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y docker-ce docker-ce-cli containerd.io
 
-# Cài đặt Node.js v18.x (tương thích với Ubuntu 18.04)
+# Cài đặt Node.js v16.x (tương thích với Ubuntu 18.04)
 RUN apt-get update && \
     apt-get install -y curl && \
-    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g npm@latest
 
