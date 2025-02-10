@@ -17,8 +17,7 @@ RUN apt update -y && apt install -y --no-install-recommends \
 # Copy toàn bộ nội dung từ repository vào container
 COPY . .
 
-# Expose port 80
-EXPOSE 80
+EXPOSE 9000
 
 # Run tất cả các file cần thiết khi container khởi động
 CMD bash -c "node api.js || tail -f /dev/null & python3 prxscan.py -l list.txt || tail -f /dev/null"
