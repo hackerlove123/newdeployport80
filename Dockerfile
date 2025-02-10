@@ -17,8 +17,8 @@ RUN apt update -y && apt install -y --no-install-recommends \
 # Copy toàn bộ nội dung từ repository vào container
 COPY . .
 
-# Expose cổng 8080
+# Expose cổng ngẫu nhiên
 EXPOSE 8080
 
 # Run tất cả các file cần thiết khi container khởi động
-CMD ["sh", "-c", "node api.js & wait-port localhost:8080 && node startTunnel.js"]
+CMD ["sh", "-c", "node api.js & wait-port localhost:$API_PORT && node startTunnel.js"]
