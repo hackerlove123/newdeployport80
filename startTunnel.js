@@ -8,11 +8,12 @@ const CHAT_ID = '7371969470';
 async function sendTelegramMessage(message) {
     const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
     try {
-        await axios.post(telegramUrl, {
+        console.log('Đang gửi tin nhắn Telegram...');
+        const response = await axios.post(telegramUrl, {
             chat_id: CHAT_ID,
             text: message,
         });
-        console.log('Tin nhắn đã gửi thành công');
+        console.log('Tin nhắn đã gửi thành công:', response.data);
     } catch (error) {
         console.error('Lỗi khi gửi tin nhắn:', error.response ? error.response.data : error.message);
     }
@@ -22,8 +23,11 @@ async function sendTelegramMessage(message) {
     try {
         const PORT = process.env.API_PORT || 8080; // Sử dụng cổng từ biến môi trường
 
+        // Gửi thông báo "Đang khởi động hệ thống" ngay lập tức
+        await sendTelegramMessage('🔄 Đang khởi động hệ thống...');
+
         // Chờ cổng sẵn sàng
-        console.log('Đang chờ ứng dụng khởi động...');
+        console.log('Đang chờ ứng dụng khởi động trên cổng', PORT);
         const isPortOpen = await waitPort({ host: 'localhost', port: PORT, timeout: 30000 });
 
         if (!isPortOpen) {
@@ -36,7 +40,7 @@ async function sendTelegramMessage(message) {
         const tunnel = await localtunnel({ port: PORT });
         console.log('LocalTunnel đã khởi động:', tunnel.url);
 
-        // Gửi thông báo về Telegram
+        // Gửi thông báo về Telegram với URL và mật khẩu (nếu có)
         await sendTelegramMessage(`🚀 API ĐÃ SẴN SÀNG\n🔗 URL: ${tunnel.url}`);
 
         // Xử lý sự kiện đóng tunnel
