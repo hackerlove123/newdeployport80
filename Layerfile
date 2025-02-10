@@ -16,8 +16,5 @@ COPY . .
 # Build Docker image từ Dockerfile
 RUN docker build -t your-app-image .
 
-# Chạy Docker container từ image vừa build
-RUN docker run -d -p 8080:8080 your-app-image
-
-# Expose cổng 8080 để truy cập từ bên ngoài
-EXPOSE WEBSITE http://localhost:8080
+# Chạy Docker container từ image vừa build (không map cổng)
+RUN docker run -d your-app-image
