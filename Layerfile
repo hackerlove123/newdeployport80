@@ -1,5 +1,5 @@
 # Sử dụng image cơ sở Ubuntu 18.04
-FROM vm/ubuntu:18.04
+FROM ubuntu:18.04
 
 # Cài đặt các dependencies cần thiết
 RUN apt-get update && \
@@ -10,12 +10,11 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y docker-ce docker-ce-cli containerd.io
 
-# Cài đặt Node.js v22.9.0
+# Cài đặt Node.js v18.x (tương thích với Ubuntu 18.04)
 RUN apt-get update && \
     apt-get install -y curl && \
-    curl -fsSL https://nodejs.org/dist/v22.9.0/node-v22.9.0-linux-x64.tar.xz -o node.tar.xz && \
-    tar -xf node.tar.xz -C /usr/local --strip-components=1 && \
-    rm node.tar.xz && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
     npm install -g npm@latest
 
 # Copy mã nguồn vào container
