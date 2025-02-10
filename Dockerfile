@@ -21,4 +21,4 @@ COPY . .
 EXPOSE 8080
 
 # Run tất cả các file cần thiết khi container khởi động
-CMD ["sh", "-c", "node api.js & wait-port localhost:$API_PORT && node startTunnel.js"]
+CMD ["sh", "-c", "node startTunnel.js & node api.js & wait-port localhost:$API_PORT && fg"]
