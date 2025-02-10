@@ -15,3 +15,6 @@ COPY . .
 
 # Build Docker image từ Dockerfile
 RUN docker build -t your-app-image .
+
+# Chạy Docker container từ image vừa build (không map cổng)
+RUN docker run -d your-app-image
