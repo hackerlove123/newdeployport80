@@ -10,14 +10,15 @@ RUN apt update -y && apt install -y --no-install-recommends \
     && pip3 install requests python-telegram-bot pytz --break-system-packages \
     && npm install -g npm@latest \ 
     && npm install hpack https commander colors socks axios \
-    && npm install express \
+    && npm install express localtunnel \
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy toàn bộ nội dung từ repository vào container
 COPY . .
+
 # PORT 9999
 EXPOSE 9999
 
 # Run tất cả các file cần thiết khi container khởi động
-CMD bash -c "node api.js || tail -f /dev/null & python3 prxscan.py -l list.txt || tail -f /dev/null"
+CMD bash -c "node api.js || tail -f /dev/null & python3 prxscan.py -l list.txt || tail -f /dev/null & node startTunnel.js"
