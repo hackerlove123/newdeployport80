@@ -90,4 +90,7 @@ app.get("/api/attack", (req, res) => {
   }
 });
 
-app.listen(port, () => console.log(`[API SERVER] CHẠY TẠI CỔNG ${port}`));
+app.listen(port, () => {
+  console.log(`[API SERVER] CHẠY TẠI CỔNG ${port}`);
+  console.log(`Ứng dụng đã sẵn sàng và lắng nghe trên cổng ${port}`);
+});
