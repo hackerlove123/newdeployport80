@@ -2,7 +2,7 @@ const localtunnel = require('localtunnel');
 const axios = require('axios');
 const waitPort = require('wait-port');
 
-const PORT = 8080;
+const PORT = process.env.PORT || 8080; // Sử dụng cổng từ biến môi trường hoặc mặc định là 8080
 const TELEGRAM_TOKEN = '7588647057:AAEAeQ5Ft44mFiT5tzTEVw170pvSMsj1vJw';
 const CHAT_ID = '7371969470';
 
@@ -21,17 +21,17 @@ async function sendTelegramMessage(message) {
 
 (async () => {
     try {
-        // Chờ cổng 80 sẵn sàng
+        // Chờ cổng sẵn sàng
         console.log('Đang chờ ứng dụng khởi động...');
         const isPortOpen = await waitPort({ host: 'localhost', port: PORT, timeout: 30000 });
 
         if (!isPortOpen) {
-            throw new Error('Không thể kết nối đến cổng 80');
+            throw new Error(`Không thể kết nối đến cổng ${PORT}`);
         }
 
         console.log('Ứng dụng đã sẵn sàng, đang khởi động LocalTunnel...');
 
-        // Khởi động LocalTunnel
+        // Khởi động LocalTunnel với cổng ngẫu nhiên và subdomain ngẫu nhiên
         const tunnel = await localtunnel({ port: PORT });
         console.log('LocalTunnel đã khởi động:', tunnel.url);
 
