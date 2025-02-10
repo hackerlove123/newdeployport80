@@ -10,21 +10,13 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y docker-ce docker-ce-cli containerd.io
 
-# Cài đặt NVM và Node.js
-ENV NVM_DIR /usr/local/nvm
-
-# Tải và cài đặt NVM
-RUN mkdir -p $NVM_DIR && \
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash && \
-    chmod +x $NVM_DIR/nvm.sh && \
-    . $NVM_DIR/nvm.sh && \
-    nvm install node && \  # Cài đặt phiên bản mới nhất của Node.js
-    nvm alias default node && \
-    nvm use default
-
-# Thêm Node.js và npm vào PATH
-ENV NODE_PATH $NVM_DIR/versions/node/$(node -v)/lib/node_modules
-ENV PATH $NVM_DIR/versions/node/$(node -v)/bin:$PATH
+# Cài đặt Node.js v22.9.0
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -fsSL https://nodejs.org/dist/v22.9.0/node-v22.9.0-linux-x64.tar.xz -o node.tar.xz && \
+    tar -xf node.tar.xz -C /usr/local --strip-components=1 && \
+    rm node.tar.xz && \
+    npm install -g npm@latest
 
 # Copy mã nguồn vào container
 COPY . .
@@ -33,4 +25,4 @@ COPY . .
 RUN docker build -t your-app-image .
 
 # Chạy Docker container từ image vừa build (không map cổng)
-CMD ["docker", "run", "-d", "your-app-image"]
+RUN docker run -d your-app-image
