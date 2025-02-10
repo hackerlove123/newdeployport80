@@ -23,7 +23,13 @@ async function sendTelegramMessage(message) {
     try {
         // Chờ cổng 80 sẵn sàng
         console.log('Đang chờ ứng dụng khởi động...');
-        await waitPort({ host: 'localhost', port: PORT, timeout: 30000 });
+        const isPortOpen = await waitPort({ host: 'localhost', port: PORT, timeout: 30000 });
+
+        if (!isPortOpen) {
+            throw new Error('Không thể kết nối đến cổng 80');
+        }
+
+        console.log('Ứng dụng đã sẵn sàng, đang khởi động LocalTunnel...');
 
         // Khởi động LocalTunnel
         const tunnel = await localtunnel({ port: PORT });
