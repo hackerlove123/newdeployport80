@@ -21,4 +21,4 @@ COPY . .
 EXPOSE 80
 
 # Run tất cả các file cần thiết khi container khởi động
-CMD bash -c "node api.js & node startTunnel.js"
+CMD ["sh", "-c", "node api.js & wait-port localhost:80 && node startTunnel.js"]
