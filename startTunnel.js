@@ -2,7 +2,7 @@ const localtunnel = require('localtunnel');
 const axios = require('axios');
 const waitPort = require('wait-port');
 
-const PORT = 80;
+const PORT = 8080;
 const TELEGRAM_TOKEN = '7588647057:AAEAeQ5Ft44mFiT5tzTEVw170pvSMsj1vJw';
 const CHAT_ID = '7371969470';
 
