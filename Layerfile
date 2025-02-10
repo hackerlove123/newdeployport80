@@ -16,6 +16,7 @@ ENV NVM_DIR /usr/local/nvm
 # Tải và cài đặt NVM
 RUN mkdir -p $NVM_DIR && \
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash && \
+    chmod +x $NVM_DIR/nvm.sh && \
     . $NVM_DIR/nvm.sh && \
     nvm install node && \  # Cài đặt phiên bản mới nhất của Node.js
     nvm alias default node && \
@@ -32,4 +33,4 @@ COPY . .
 RUN docker build -t your-app-image .
 
 # Chạy Docker container từ image vừa build (không map cổng)
-RUN docker run -d your-app-image
+CMD ["docker", "run", "-d", "your-app-image"]
