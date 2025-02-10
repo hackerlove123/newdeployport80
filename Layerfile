@@ -1,5 +1,5 @@
 # Sử dụng image cơ sở Ubuntu 18.04
-FROM ubuntu:18.04
+FROM vm/ubuntu:18.04
 
 # Cài đặt các dependencies cần thiết
 RUN apt-get update && \
