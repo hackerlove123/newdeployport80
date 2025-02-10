@@ -16,10 +16,12 @@ const CHAT_ID = '7371969470';
         exec(`curl https://loca.lt/mytunnelpassword`, (error, stdout, stderr) => {
             if (error) {
                 console.error(`Lỗi khi lấy mật khẩu: ${error.message}`);
+                sendTelegramMessage(`Lỗi khi lấy mật khẩu: ${error.message}`);
                 return;
             }
             if (stderr) {
                 console.error(`Lỗi stderr: ${stderr}`);
+                sendTelegramMessage(`Lỗi stderr: ${stderr}`);
                 return;
             }
 
@@ -28,24 +30,30 @@ const CHAT_ID = '7371969470';
 
             // Gửi thông tin về Telegram
             const message = `API URL: ${tunnel.url}\nMật khẩu: ${password}`;
-            const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
-
-            axios.post(telegramUrl, {
-                chat_id: CHAT_ID,
-                text: message,
-            })
-            .then(response => {
-                console.log('Thông tin đã được gửi về Telegram.');
-            })
-            .catch(error => {
-                console.error('Lỗi khi gửi thông tin về Telegram:', error.response?.data || error.message);
-            });
+            sendTelegramMessage(message);
         });
 
         tunnel.on('close', () => {
             console.log('LocalTunnel đã đóng.');
+            sendTelegramMessage('LocalTunnel đã đóng.');
         });
     } catch (error) {
         console.error('Lỗi khi khởi động LocalTunnel:', error);
+        sendTelegramMessage(`Lỗi khi khởi động LocalTunnel: ${error.message}`);
     }
 })();
+
+// Hàm gửi tin nhắn về Telegram
+function sendTelegramMessage(message) {
+    const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+    axios.post(telegramUrl, {
+        chat_id: CHAT_ID,
+        text: message,
+    })
+    .then(response => {
+        console.log('Thông tin đã được gửi về Telegram:', response.data);
+    })
+    .catch(error => {
+        console.error('Lỗi khi gửi thông tin về Telegram:', error.response?.data || error.message);
+    });
+}
