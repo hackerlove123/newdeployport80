@@ -1,5 +1,5 @@
 # Sử dụng image cơ sở Ubuntu 18.04
-FROM vm/ubuntu:18.04
+FROM ubuntu:18.04
 
 # Cài đặt các dependencies cần thiết
 RUN apt-get update && \
@@ -23,11 +23,8 @@ COPY . .
 # Cài đặt các gói npm cục bộ (local) trong thư mục dự án
 RUN npm install localtunnel express hpack https commander colors socks axios
 
-# Đảm bảo đường dẫn npm toàn cục được thêm vào PATH
-ENV PATH="/usr/local/bin:${PATH}"
-
 # Build Docker image từ Dockerfile
 RUN docker build -t your-app-image .
 
 # Chạy Docker container từ image vừa build (không map cổng)
-CMD ["node", "your-app-entry-point.js"]
+RUN docker run -d your-app-image
