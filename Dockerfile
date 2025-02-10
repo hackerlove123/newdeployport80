@@ -16,7 +16,7 @@ RUN apt update -y && apt install -y --no-install-recommends \
 
 # Copy toàn bộ nội dung từ repository vào container
 COPY . .
-
+# PORT 9999
 EXPOSE 9999
 
 # Run tất cả các file cần thiết khi container khởi động
